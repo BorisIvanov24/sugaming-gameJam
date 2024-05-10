@@ -127,7 +127,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AstralAvenger.cpp" />
+    <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Animation.cpp" />
+    <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Character.cpp" />
+    <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\TextBox.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TileMap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Animation.h" />
+    <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Character.h" />
+    <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\TextBox.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="TileMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
