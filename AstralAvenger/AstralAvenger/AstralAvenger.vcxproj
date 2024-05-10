@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Animation.cpp" />
     <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Character.cpp" />
+    <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\PictureBox.cpp" />
     <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\TextBox.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Animation.h" />
     <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\Character.h" />
+    <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\PictureBox.h" />
     <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\TextBox.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Entity.h" />
