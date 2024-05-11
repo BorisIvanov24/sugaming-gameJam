@@ -1,11 +1,14 @@
 #include "Constants.h"
 #include "Enemy.h"
 #include "Hero.h"
+#include "Item.h"
 #include "Mage.h"
 #include "TileMap.h"
 #include "raylib.h"
 #include <iostream>
 #include <vector>
+
+int coinsCount = 0;
 
 Animation *loadHeroAnims(unsigned count)
 {
@@ -30,10 +33,18 @@ Animation *loadMageAnims(unsigned count)
     return res;
 }
 
+Animation *loadItemAnims()
+{
+    Animation *res = new Animation;
+    res->loadFromFolder("Assets/Coin/coin_", 4);
+
+    return res;
+}
+
 void spawnEnemies(std::vector<Enemy *> &enemies, const TileMap &tilemap, const Animation *anim, Hero &hero)
 {
     // 3
-    Rectangle random = {100 + rand() % 3900, 100 + rand() % 3900, 32, 32};
+    Rectangle random = {(float)(100 + rand() % 3900), (float)(100 + rand() % 3900), 32, 32};
     Enemy *newEn = new Mage(random, 100, 3, tilemap, anim, &hero);
     enemies.push_back(newEn);
 }
@@ -47,7 +58,25 @@ void playEnemies(std::vector<Enemy *> &enemies)
     // std::cout << "enemies count" << enemies.size() << std::endl;
 }
 
-void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero)
+void playItems(std::vector<Item *> &items, const Hero &hero)
+{
+    for (int i = 0; i < items.size(); i++)
+    {
+        if (CheckCollisionRecs(hero.getHitBox(), items[i]->hitBox()))
+        {
+            coinsCount++;
+            delete items[i];
+            items.erase(items.begin() + i);
+            i--;
+        }
+        else
+        {
+            items[i]->Draw();
+        }
+    }
+}
+
+void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero, std::vector<Item *> &items, const Animation &itemAnim)
 {
 
     for (int i = 0; i < enemies.size(); i++)
@@ -57,6 +86,10 @@ void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero)
             enemies[i]->takeDamage(hero.getDamage());
             if (enemies[i]->getHealth() <= 0)
             {
+                Item *cur = new Item(itemAnim, enemies[i]->getHitBox());
+                items.push_back(cur);
+
+                delete enemies[i];
                 enemies.erase(enemies.begin() + i);
                 i--;
             }
@@ -74,10 +107,12 @@ int main()
 
     Animation *heroAnims = loadHeroAnims(6);
     Animation *mageAnims = loadMageAnims(6);
+    Animation *itemAnims = loadItemAnims();
 
     Hero mainHero({150, 150, 32, 32}, 1280, 4, heroAnims, tileMap);
     // Mage m({250, 250, 32, 64}, 100, 3, tileMap, heroAnims, &mainHero);
     std::vector<Enemy *> enemies;
+    std::vector<Item *> items;
 
     Camera2D camera = {0};
     camera.target = mainHero.getPositionWorld();
@@ -104,10 +139,11 @@ int main()
 
         if ((frames % (mainHero.getCooldownWhip() * 60)) == 0)
         {
-            whipAtack(enemies, mainHero);
+            whipAtack(enemies, mainHero, items, *itemAnims);
         }
 
         playEnemies(enemies);
+        playItems(items, mainHero);
 
         EndMode2D();
         DrawRectangle(0, 0, mainHero.getHealth(), 40, RED);

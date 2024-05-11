@@ -133,6 +133,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Hero.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TileMap.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Hero.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Mage.h" />
     <ClInclude Include="TileMap.h" />
   </ItemGroup>
