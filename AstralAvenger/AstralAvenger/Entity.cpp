@@ -1,12 +1,11 @@
 #include "Entity.h"
 
-Entity::Entity(const Rectangle& hitBox, unsigned health, unsigned movementSpeed, const TileMap& tileMap) : tileMap(tileMap)
+Entity::Entity(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap) : tileMap(tileMap)
 {
     this->hitBox = hitBox;
     // this->position = { hitBox.x, hitBox.y };
     this->health = health;
     this->movementSpeed = movementSpeed;
-    
 }
 
 void Entity::setHealth(unsigned health)
@@ -52,6 +51,11 @@ unsigned Entity::getMatrixRowPos() const
 unsigned Entity::getMatrixColPos() const
 {
     return hitBox.x / TILE_SIZE;
+}
+
+bool Entity::isAlive() const
+{
+    return health > 0;
 }
 
 const Rectangle &Entity::getHitBox() const

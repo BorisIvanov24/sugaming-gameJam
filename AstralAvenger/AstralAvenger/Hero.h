@@ -2,8 +2,8 @@
 #include "Animation.h"
 #include "Constants.h"
 #include "Entity.h"
-#include "raylib.h"
 #include "TileMap.h"
+#include "raylib.h"
 
 struct HeroState
 {
@@ -16,7 +16,8 @@ class Hero : public Entity
 {
   public:
     Hero() = default;
-    Hero(const Rectangle &hitBox, unsigned health, unsigned movementSpeed, const Animation *animations, const TileMap& tileMap);
+    Hero(const Rectangle &hitBox, int health, unsigned movementSpeed, const Animation *animations,
+         const TileMap &tileMap);
 
     void play();
     void takeDamage(unsigned damage);
@@ -26,11 +27,10 @@ class Hero : public Entity
     void update();
     void draw() const;
     void move();
-    
 
     const Animation *animations;
     HeroState state;
     TextBox nameTag;
-    
+
     // atacks/wepons //healthbar
 };
