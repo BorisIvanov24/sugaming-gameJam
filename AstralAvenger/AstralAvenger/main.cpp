@@ -29,6 +29,7 @@ int main()
 
     Animation *heroAnims = loadHeroAnims(5);
     Hero mainHero({150, 150, 32, 64}, 100, 5, heroAnims, tileMap);
+    Mage m({250, 250, 32, 64}, 100, 3, tileMap, heroAnims, &mainHero);
 
     Camera2D camera = {0};
     camera.target = mainHero.getPositionWorld();
@@ -47,6 +48,7 @@ int main()
         BeginMode2D(camera);
         tileMap.draw();
         mainHero.play();
+        m.play();
 
         EndMode2D();
 
