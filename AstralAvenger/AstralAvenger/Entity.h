@@ -1,29 +1,28 @@
 #pragma once
-#include "raylib.h"
 #include "Constants.h"
+#include "raylib.h"
 
 class Entity
 {
-public:
-	Entity() = default;
-	Entity(const Rectangle& hitBox, unsigned health, unsigned movementSpeed);
-	
-	void setHealth(unsigned health);
-	void setMovementSpeed(unsigned movementSpeed);
+  public:
+    Entity() = default;
+    Entity(const Rectangle &hitBox, unsigned health, unsigned movementSpeed);
 
-	unsigned getHealth() const;
-	unsigned getMovementSpeed() const;
-	Vector2 getPositionWorld() const;
+    void setHealth(unsigned health);
+    void setMovementSpeed(unsigned movementSpeed);
 
-	unsigned getMatrixRowPos() const;
-	unsigned getMatrixColPos() const;
+    unsigned getHealth() const;
+    unsigned getMovementSpeed() const;
+    Vector2 getPositionWorld() const;
 
-private:
+    unsigned getMatrixRowPos() const;
+    unsigned getMatrixColPos() const;
 
-	Rectangle hitBox = {0, 0, 32, 64};
-	//Vector2 position = { 0, 0 };
-	unsigned health = 100;
-	unsigned movementSpeed = 2; //how many pixels to move per frame
+    const Rectangle &getHitBox() const;
 
+  protected:
+    Rectangle hitBox = {0, 0, 32, 64};
+    // Vector2 position = { 0, 0 };
+    unsigned health = 100;
+    unsigned movementSpeed = 2; // how many pixels to move per frame
 };
-
