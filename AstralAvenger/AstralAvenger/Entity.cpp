@@ -1,11 +1,12 @@
 #include "Entity.h"
 
-Entity::Entity(const Rectangle &hitBox, unsigned health, unsigned movementSpeed)
+Entity::Entity(const Rectangle& hitBox, unsigned health, unsigned movementSpeed, const TileMap& tileMap) : tileMap(tileMap)
 {
     this->hitBox = hitBox;
     // this->position = { hitBox.x, hitBox.y };
     this->health = health;
     this->movementSpeed = movementSpeed;
+    
 }
 
 void Entity::setHealth(unsigned health)
@@ -31,6 +32,16 @@ unsigned Entity::getMovementSpeed() const
 Vector2 Entity::getPositionWorld() const
 {
     return {hitBox.x, hitBox.y};
+}
+
+unsigned getMatrixRowPosCustom(unsigned x)
+{
+    return x / TILE_SIZE;
+}
+
+unsigned getMatrixColPosCustom(unsigned y)
+{
+    return y / TILE_SIZE;
 }
 
 unsigned Entity::getMatrixRowPos() const

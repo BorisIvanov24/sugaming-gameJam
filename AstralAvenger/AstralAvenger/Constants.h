@@ -8,3 +8,5 @@ constexpr unsigned MAP_WIDTH_PIXELS = 128 * 32;
 constexpr unsigned MAP_HEIGHT_PIXELS = 128 * 32;
 
 constexpr unsigned TILE_SIZE = 32;
+
+
