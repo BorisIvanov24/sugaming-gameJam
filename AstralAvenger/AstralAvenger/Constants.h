@@ -10,5 +10,3 @@ constexpr unsigned MAP_HEIGHT_PIXELS = 128 * 32;
 constexpr Rectangle HIT_BOX = {0, 0, 64, 64};
 
 constexpr unsigned TILE_SIZE = 32;
-
-

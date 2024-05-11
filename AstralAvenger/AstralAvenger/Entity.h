@@ -13,6 +13,7 @@ class Entity
     Entity(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap);
 
     void setHealth(unsigned health);
+    void virtual takeDamage(unsigned damage) ;
     void setMovementSpeed(unsigned movementSpeed);
 
     unsigned getHealth() const;
@@ -29,7 +30,7 @@ class Entity
   protected:
     Rectangle hitBox = {0, 0, 32, 64};
     // Vector2 position = { 0, 0 };
-    int health = 100;
+    mutable int health = 100;
     unsigned movementSpeed = 2; // how many pixels to move per frame
 
     const TileMap &tileMap;

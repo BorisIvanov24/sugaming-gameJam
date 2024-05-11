@@ -1,21 +1,46 @@
 #include "Hero.h"
+#include <iostream>
 
 void Hero::play()
 {
     input();
     update();
     draw();
+
+    //  std::cout << health << std::endl;
 }
 
-void Hero::takeDamage(unsigned damage)
+unsigned Hero::getCooldownWhip() const
 {
-    health -= damage;
+    return cooldownWhip;
+}
+
+const Rectangle &Hero::getWhipRec() const
+{
+    return whipRec;
+}
+
+unsigned Hero::getDamage() const
+{
+    return damage;
+}
+
+void Hero::setDamage(unsigned damage)
+{
+    this->damage = damage;
 }
 
 Hero::Hero(const Rectangle &hitBox, int health, unsigned movementSpeed, const Animation *animations,
            const TileMap &tileMap)
-    : Entity(hitBox, health, movementSpeed, tileMap), animations(animations)
+    : Entity(hitBox, health, movementSpeed, tileMap)
 {
+    for (size_t i = 0; i < 5; i++) // copy animations
+    {
+        this->animations[i] = animations[i];
+    }
+
+    whipRec = {hitBox.x - 64, hitBox.y - 64, 160, 64};
+    cooldownWhip = 2;
 }
 
 void Hero::input()
@@ -63,7 +88,8 @@ void Hero::update()
 void Hero::draw() const
 {
     animations[(int)state.animToPlay].play({hitBox.x, hitBox.y});
-    // healthbar
+    DrawRectangleLines(whipRec.x, whipRec.y, whipRec.width, whipRec.height, BLACK);
+    DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
     // nametag
 }
 
@@ -71,6 +97,9 @@ void Hero::move()
 {
     int newPosX = hitBox.x + state.changeOfX;
     int newPosY = hitBox.y + state.changeOfY;
+
+    int newWhipPosX = whipRec.x + state.changeOfX;
+    int newWhipPosY = whipRec.y + state.changeOfY;
 
     if (newPosX < 0)
         newPosX = 0;
@@ -85,5 +114,7 @@ void Hero::move()
     {
         hitBox.x = newPosX;
         hitBox.y = newPosY;
+        whipRec.x = newWhipPosX;
+        whipRec.y = newWhipPosY;
     }
 }

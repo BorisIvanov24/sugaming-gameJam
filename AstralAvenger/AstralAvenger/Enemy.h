@@ -16,21 +16,22 @@ class Enemy : public Entity
 
   public:
     Enemy() = default;
-    Enemy(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap);
+    Enemy(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap, Hero *target);
 
     void play();
-    void doDamage();
     virtual ~Enemy() = default;
+    void takeDamage(unsigned damage) override;
 
   protected:
     void input();
     void update();
-    void draw() const;
+    void draw();
     void move();
 
-    const Animation *animations = nullptr;
-    const Hero *target;
+    Animation animations[6];
+    Hero *target = nullptr;
     unsigned damage = 0;
     unsigned attackSpeed = 0;
     EnemyState state;
+    bool hurtPlaying = false;
 };

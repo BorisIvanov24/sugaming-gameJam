@@ -13,6 +13,11 @@ void Entity::setHealth(unsigned health)
     this->health = health;
 }
 
+void Entity::takeDamage(unsigned damage)
+{
+    health -= damage;
+}
+
 void Entity::setMovementSpeed(unsigned movementSpeed)
 {
     this->movementSpeed = movementSpeed;

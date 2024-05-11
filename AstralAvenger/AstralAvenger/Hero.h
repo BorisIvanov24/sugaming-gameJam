@@ -20,7 +20,11 @@ class Hero : public Entity
          const TileMap &tileMap);
 
     void play();
-    void takeDamage(unsigned damage);
+    unsigned getCooldownWhip() const;
+    const Rectangle &getWhipRec() const;
+
+    unsigned getDamage() const;
+    void setDamage(unsigned damage);
 
   private:
     void input();
@@ -28,9 +32,12 @@ class Hero : public Entity
     void draw() const;
     void move();
 
-    const Animation *animations;
+    Animation animations[6];
     HeroState state;
     TextBox nameTag;
+    Rectangle whipRec;
+    unsigned cooldownWhip = 2;
+    unsigned damage = 50;
 
     // atacks/wepons //healthbar
 };

@@ -1,8 +1,9 @@
 #include "Enemy.h"
 
-Enemy::Enemy(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap)
+Enemy::Enemy(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap, Hero *target)
     : Entity(hitBox, health, movementSpeed, tileMap)
 {
+    this->target = target;
 }
 
 void Enemy::play()
@@ -10,15 +11,20 @@ void Enemy::play()
     input();
     update();
     draw();
-    // damage
-}
-
-void Enemy::doDamage()
-{
+    if (CheckCollisionRecs(getHitBox(), target->getHitBox()))
+    {
+        target->takeDamage(damage);
+    }
 }
 
 void Enemy::input()
 {
+
+    if (hurtPlaying)
+    {
+        return;
+    }
+
     // state.animToPlay = AnimationType::DEFAULT;
     state.changeOfX = 0;
     state.changeOfY = 0;
@@ -26,25 +32,21 @@ void Enemy::input()
     Vector2 myPos = getPositionWorld();
     Vector2 targetPos = target->getPositionWorld();
 
-    if (targetPos.x < myPos.x) // horizontaly
+    if ((int)targetPos.x < (int)myPos.x) // horizontaly
     {
-        state.animToPlay = AnimationType::MOVE_LEFT;
         state.changeOfX = -(int)movementSpeed;
     }
-    else
+    else if ((int)targetPos.x > (int)myPos.x)
     {
-        state.animToPlay = AnimationType::MOVE_RIGHT;
         state.changeOfX = (int)movementSpeed;
     }
 
-    if (targetPos.y < myPos.y) // verically
+    if ((int)targetPos.y < (int)myPos.y) // verically
     {
-        state.animToPlay = AnimationType::MOVE_UP;
         state.changeOfY = -(int)movementSpeed;
     }
-    else
+    else if ((int)targetPos.y > (int)myPos.y)
     {
-        state.animToPlay = AnimationType::MOVE_DOWN;
         state.changeOfY = (int)movementSpeed;
     }
 
@@ -53,6 +55,37 @@ void Enemy::input()
         state.changeOfX *= 0.75;
         state.changeOfY *= 0.75;
     }
+
+    if (state.changeOfX < 0)
+    {
+        state.animToPlay = AnimationType::MOVE_LEFT;
+    }
+    else if (state.changeOfX > 0)
+    {
+        state.animToPlay = AnimationType::MOVE_RIGHT;
+    }
+    else
+    {
+        if (state.changeOfY > 0)
+        {
+            state.animToPlay = AnimationType::MOVE_DOWN;
+        }
+        else if (state.changeOfY < 0)
+        {
+            state.animToPlay = AnimationType::MOVE_UP;
+        }
+        else
+        {
+            state.animToPlay = AnimationType::DEFAULT;
+        }
+    }
+}
+void Enemy::takeDamage(unsigned damage)
+{
+    health -= damage;
+
+    hurtPlaying = true;
+    state.animToPlay = AnimationType::HURT;
 }
 
 void Enemy::update()
@@ -61,9 +94,16 @@ void Enemy::update()
     // damage...
 }
 
-void Enemy::draw() const
+void Enemy::draw()
 {
+    if (hurtPlaying)
+    {
+        hurtPlaying = animations[(int)state.animToPlay].playRun({hitBox.x, hitBox.y});
+        DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
+        return;
+    }
     animations[(int)state.animToPlay].play({hitBox.x, hitBox.y});
+    DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
 }
 
 void Enemy::move()

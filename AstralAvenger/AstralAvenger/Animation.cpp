@@ -2,11 +2,11 @@
 #include <iostream>
 #include <sstream>
 
-Animation::Animation(const Texture2D *textures, unsigned size, const Rectangle& rec) : Animation()
+Animation::Animation(const Texture2D* textures, unsigned size, const Rectangle& rec) : Animation()
 {
     PictureBox pb;
 
-    for (int i = 0; i < size; i++)
+    for (unsigned i = 0; i < size; i++)
     {
         pb.setTexture(textures[i]);
         pb.setRectangle(rec);
@@ -19,7 +19,7 @@ unsigned Animation::getTexturesCount() const
     return textures.size();
 }
 
-void Animation::loadFromFolder(const char *path, uint8_t numberOfTextures)
+void Animation::loadFromFolder(const char* path, uint8_t numberOfTextures)
 {
     PictureBox pb;
     pb.setRectangle(rec);
@@ -37,7 +37,6 @@ void Animation::loadFromFolder(const char *path, uint8_t numberOfTextures)
     }
 }
 
-
 void Animation::play(const Vector2& posToPlay) const
 {
     textures[currentTexture].draw(posToPlay, RAYWHITE);
@@ -49,12 +48,30 @@ void Animation::play(const Vector2& posToPlay) const
         else
             currentTexture++;
     }
-    
+
     frames++;
-    
 }
 
-void Animation::addTexture(const Texture2D &texture)
+bool Animation::playRun(const Vector2& posToPlay) const
+{
+    textures[currentTexture].draw(posToPlay, RAYWHITE);
+
+    if (frames % CHANGE_FRAME_AFTER == 0)
+    {
+        if (currentTexture == (getTexturesCount() - 1))
+        {
+            currentTexture = 0;
+            return false;
+        }
+        else
+            currentTexture++;
+    }
+
+    frames++;
+    return true;
+}
+
+void Animation::addTexture(const Texture2D& texture)
 {
     PictureBox pb(texture, rec);
     textures.push_back(pb);
