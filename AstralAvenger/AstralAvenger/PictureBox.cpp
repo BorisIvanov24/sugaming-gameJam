@@ -48,7 +48,7 @@ void PictureBox::draw(const Color &tint) const
     DrawTexture(texture, rectangle.x, rectangle.y, tint);
 }
 
-void PictureBox::draw(const Vector2& position, const Color& tint) const
+void PictureBox::draw(const Vector2 &position, const Color &tint) const
 {
     DrawTexture(texture, position.x, position.y, tint);
 }

@@ -3,16 +3,16 @@
 
 #pragma warning(disable : 4996)
 
-static size_t calculateFontSize(const Rectangle &rec, const char *text, const Font &font)
+static unsigned calculateFontSize(const Rectangle &rec, const char *text, const Font &font)
 {
     Vector2 textSize = {0, 0};
-    size_t fontSize = 2;
-    size_t width = rec.width - (2 * (rec.width / DEFAULT_OFFSET));
-    size_t height = rec.height - (2 * (rec.height / DEFAULT_OFFSET));
+    unsigned fontSize = 2;
+    unsigned width = rec.width - (2 * (rec.width / DEFAULT_OFFSET));
+    unsigned height = rec.height - (2 * (rec.height / DEFAULT_OFFSET));
 
     do
     {
-        fontSize++;
+        fontSize += 2;
         textSize = MeasureTextEx(font, text, fontSize, DEFAULT_SPACING);
 
     } while ((textSize.x < width) && (textSize.y < height));

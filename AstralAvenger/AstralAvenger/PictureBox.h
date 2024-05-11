@@ -17,12 +17,12 @@ class PictureBox
     const Texture2D &getTexture2D() const;
 
     void draw(const Color &tint) const;
-    void draw(const Vector2& position, const Color& tint) const;
+    void draw(const Vector2 &position, const Color &tint) const;
 
   private:
     void resizeTexture();
 
     Texture2D texture = {0};
     Rectangle rectangle = DEFAULT_REC;
-    Vector2 position = { 0 };
+    Vector2 position = {0};
 };

@@ -7,7 +7,7 @@ void Hero::play()
     update();
     draw();
 
-    //  std::cout << health << std::endl;
+    //  std::cout << health << std::
 }
 
 unsigned Hero::getCooldownWhip() const

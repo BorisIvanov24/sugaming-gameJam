@@ -127,8 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\PictureBox.cpp" />
-    <ClCompile Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\TextBox.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -136,11 +134,11 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PictureBox.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\PictureBox.h" />
-    <ClInclude Include="..\..\..\GameJamPractice\AnimationTest\AnimationTest\TextBox.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Enemy.h" />
@@ -148,6 +146,8 @@
     <ClInclude Include="Hero.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Mage.h" />
+    <ClInclude Include="PictureBox.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="TileMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
