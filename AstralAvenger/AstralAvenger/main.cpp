@@ -23,14 +23,14 @@ int main()
 
     TileMap tileMap("Assets/Map/map.png", "Assets/Map/MapMatrix.dat");
 
-    for (int i = 0; i < 128; i++)
+    /*for (int i = 0; i < 128; i++)
     {
         std::cout << std::endl;
         for (int j = 0; j < 128; j++)
         {
             std::cout << (int)tileMap.getValueAt(i, j);
         }
-    }
+    }*/
     Animation *heroAnims = loadHeroAnims(5);
     Hero mainHero({150, 150, 32, 64}, 100, 5, heroAnims, tileMap);
 
