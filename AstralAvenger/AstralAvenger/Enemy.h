@@ -21,6 +21,7 @@ class Enemy : public Entity
     void play();
     void doDamage();
     virtual ~Enemy() = default;
+    virtual void levelUp() = 0;
 
   protected:
     void input();
@@ -28,8 +29,8 @@ class Enemy : public Entity
     void draw() const;
     void move();
 
-    const Animation *animations = nullptr;
-    const Hero *target;
+    const Animation* animations;
+    const Hero* target;
     unsigned damage = 0;
     unsigned attackSpeed = 0;
     EnemyState state;
