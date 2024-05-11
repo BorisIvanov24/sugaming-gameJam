@@ -101,7 +101,7 @@ int main()
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "AstralAvenger");
     SetTargetFPS(60);
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
+    // SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     TileMap tileMap("Assets/Map/map.png", "Assets/Map/MapMatrix.dat");
 

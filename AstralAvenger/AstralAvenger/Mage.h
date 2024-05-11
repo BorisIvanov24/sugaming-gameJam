@@ -6,6 +6,4 @@ class Mage : public Enemy
     Mage() = default;
     Mage(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap, const Animation *anim,
          Hero *target);
-
-    
 };

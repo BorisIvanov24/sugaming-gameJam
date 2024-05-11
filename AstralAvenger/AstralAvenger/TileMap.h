@@ -1,7 +1,7 @@
 #pragma once
+#include "Constants.h"
 #include "raylib.h"
 #include <cinttypes>
-#include "Constants.h"
 
 /*
  0 -> empty block
@@ -10,17 +10,16 @@
 
 class TileMap
 {
-public:
-	TileMap() = default;
-	TileMap(const char* filePathBackground, const char* filePathMatrix);
+  public:
+    TileMap() = default;
+    TileMap(const char *filePathBackground, const char *filePathMatrix);
 
-	int8_t getValueAt(unsigned col, unsigned row) const;
-	void setValueAt(unsigned col, unsigned row, int8_t value);
+    int8_t getValueAt(unsigned col, unsigned row) const;
+    void setValueAt(unsigned col, unsigned row, int8_t value);
 
-	void draw() const;
+    void draw() const;
 
-private:
-	Texture2D background = { 0 };
-	int8_t matrix[MAP_WIDTH][MAP_HEIGHT] = { 0 };
+  private:
+    Texture2D background = {0};
+    int8_t matrix[MAP_WIDTH][MAP_HEIGHT] = {0};
 };
-

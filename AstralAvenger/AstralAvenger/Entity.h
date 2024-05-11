@@ -13,7 +13,7 @@ class Entity
     Entity(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap);
 
     void setHealth(unsigned health);
-    void virtual takeDamage(unsigned damage) ;
+    void virtual takeDamage(unsigned damage);
     void setMovementSpeed(unsigned movementSpeed);
 
     unsigned getHealth() const;
