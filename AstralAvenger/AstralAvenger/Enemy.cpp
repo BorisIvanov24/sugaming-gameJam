@@ -39,13 +39,13 @@ void Enemy::input()
 
     if (targetPos.y < myPos.y) // verically
     {
-        // state.animToPlay = AnimationType::MOVE_UP;
-        state.changeOfX = -(int)movementSpeed;
+        state.animToPlay = AnimationType::MOVE_UP;
+        state.changeOfY = -(int)movementSpeed;
     }
     else
     {
-        // state.animToPlay = AnimationType::MOVE_DOWN;
-        state.changeOfX = (int)movementSpeed;
+        state.animToPlay = AnimationType::MOVE_DOWN;
+        state.changeOfY = (int)movementSpeed;
     }
 
     if (state.changeOfX != 0 && state.changeOfY != 0)
