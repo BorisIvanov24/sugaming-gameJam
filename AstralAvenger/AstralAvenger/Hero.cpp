@@ -12,7 +12,8 @@ void Hero::takeDamage(unsigned damage)
     health -= damage;
 }
 
-Hero::Hero(const Rectangle &hitBox, unsigned health, unsigned movementSpeed, const Animation *animations, const TileMap& tileMap)
+Hero::Hero(const Rectangle &hitBox, int health, unsigned movementSpeed, const Animation *animations,
+           const TileMap &tileMap)
     : Entity(hitBox, health, movementSpeed, tileMap), animations(animations)
 {
 }
@@ -45,8 +46,7 @@ void Hero::input()
         state.changeOfY = -(int)movementSpeed;
     }
     // diagonaly
-    if ((IsKeyDown(KEY_S) && IsKeyDown(KEY_A)) || (IsKeyDown(KEY_S) && IsKeyDown(KEY_D)) ||
-        (IsKeyDown(KEY_D) && IsKeyDown(KEY_W)) || (IsKeyDown(KEY_A) && IsKeyDown(KEY_W)))
+    if (state.changeOfX != 0 && state.changeOfY != 0)
     {
         state.changeOfX *= 0.75;
         state.changeOfY *= 0.75;
@@ -71,7 +71,7 @@ void Hero::move()
 {
     int newPosX = hitBox.x + state.changeOfX;
     int newPosY = hitBox.y + state.changeOfY;
-    
+
     if (newPosX < 0)
         newPosX = 0;
 
@@ -81,7 +81,7 @@ void Hero::move()
     unsigned newRowPos = getMatrixRowPosCustom((unsigned)newPosY);
     unsigned newColPos = getMatrixColPosCustom((unsigned)newPosX);
 
-    if(tileMap.getValueAt(newRowPos, newColPos) == 0)
+    if (tileMap.getValueAt(newRowPos, newColPos) == 0)
     {
         hitBox.x = newPosX;
         hitBox.y = newPosY;

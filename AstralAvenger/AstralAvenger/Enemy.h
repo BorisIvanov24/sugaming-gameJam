@@ -1,7 +1,36 @@
 #pragma once
+#include "Animation.h"
+#include "Entity.h"
+#include "Hero.h"
+#include "raylib.h"
 
-class Enemy
+struct EnemyState
 {
-
+    AnimationType animToPlay = AnimationType::DEFAULT;
+    int8_t changeOfX = 0;
+    int8_t changeOfY = 0;
 };
 
+class Enemy : public Entity
+{
+
+  public:
+    Enemy() = default;
+    Enemy(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap);
+
+    void play();
+    void doDamage();
+    virtual ~Enemy() = default;
+
+  protected:
+    void input();
+    void update();
+    void draw() const;
+    void move();
+
+    const Animation *animations = nullptr;
+    const Hero *target;
+    unsigned damage = 0;
+    unsigned attackSpeed = 0;
+    EnemyState state;
+};
