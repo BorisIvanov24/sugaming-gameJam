@@ -25,11 +25,13 @@ class Hero : public Entity
 
     unsigned getDamage() const;
     void setDamage(unsigned damage);
+    void playWhip() const;
+    void setWhipPlaying();
 
   private:
     void input();
     void update();
-    void draw() const;
+    void draw();
     void move();
 
     Animation animations[6];
@@ -38,6 +40,7 @@ class Hero : public Entity
     Rectangle whipRec;
     unsigned cooldownWhip = 2;
     unsigned damage = 50;
+    bool whipPlaying = false;
 
     // atacks/wepons //healthbar
 };

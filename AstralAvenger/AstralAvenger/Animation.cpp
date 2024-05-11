@@ -81,3 +81,12 @@ void Animation::removeLastTexture(uint8_t index)
 {
     textures.pop_back();
 }
+
+void Animation::setRectangle(const Rectangle& rec)
+{
+    this->rec = rec;
+    for (int i = 0; i < textures.size(); i++)
+    {
+        textures[i].setRectangle(rec);
+    }
+}

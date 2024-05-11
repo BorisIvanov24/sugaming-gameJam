@@ -30,11 +30,21 @@ void Hero::setDamage(unsigned damage)
     this->damage = damage;
 }
 
+void Hero::playWhip() const
+{
+    animations[5].play({whipRec.x, whipRec.y});
+}
+
+void Hero::setWhipPlaying()
+{
+    whipPlaying = true;
+}
+
 Hero::Hero(const Rectangle &hitBox, int health, unsigned movementSpeed, const Animation *animations,
            const TileMap &tileMap)
     : Entity(hitBox, health, movementSpeed, tileMap)
 {
-    for (size_t i = 0; i < 5; i++) // copy animations
+    for (size_t i = 0; i < 6; i++) // copy animations
     {
         this->animations[i] = animations[i];
     }
@@ -85,11 +95,15 @@ void Hero::update()
     // healthbar
 }
 
-void Hero::draw() const
+void Hero::draw() 
 {
+    if (whipPlaying)
+    {
+        whipPlaying = animations[5].playRun({ whipRec.x, whipRec.y });
+    }
     animations[(int)state.animToPlay].play({hitBox.x, hitBox.y});
-    DrawRectangleLines(whipRec.x, whipRec.y, whipRec.width, whipRec.height, BLACK);
-    DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
+    //DrawRectangleLines(whipRec.x, whipRec.y, whipRec.width, whipRec.height, BLACK);
+    //DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
     // nametag
 }
 

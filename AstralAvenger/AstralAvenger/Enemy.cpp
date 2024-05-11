@@ -99,11 +99,11 @@ void Enemy::draw()
     if (hurtPlaying)
     {
         hurtPlaying = animations[(int)state.animToPlay].playRun({hitBox.x, hitBox.y});
-        DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
+        // DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
         return;
     }
     animations[(int)state.animToPlay].play({hitBox.x, hitBox.y});
-    DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
+    // DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
 }
 
 void Enemy::move()

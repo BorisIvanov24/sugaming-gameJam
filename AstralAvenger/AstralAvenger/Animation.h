@@ -13,6 +13,7 @@ enum class AnimationType
     MOVE_LEFT,
     MOVE_RIGHT,
     HURT,
+    WHIP,
     ITEM
 };
 class Animation
@@ -26,6 +27,7 @@ class Animation
     bool playRun(const Vector2 &posToPlay) const;
     void addTexture(const Texture2D &texture);
     void removeLastTexture(uint8_t index);
+    void setRectangle(const Rectangle& rec);
 
   private:
     std::vector<PictureBox> textures;

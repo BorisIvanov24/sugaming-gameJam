@@ -18,6 +18,11 @@ void Entity::takeDamage(unsigned damage)
     health -= damage;
 }
 
+void Entity::heal()
+{
+    health += 100;
+}
+
 void Entity::setMovementSpeed(unsigned movementSpeed)
 {
     this->movementSpeed = movementSpeed;

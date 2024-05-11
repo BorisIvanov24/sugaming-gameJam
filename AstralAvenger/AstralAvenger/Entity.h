@@ -14,6 +14,7 @@ class Entity
 
     void setHealth(unsigned health);
     void virtual takeDamage(unsigned damage);
+    void virtual heal();
     void setMovementSpeed(unsigned movementSpeed);
 
     unsigned getHealth() const;
