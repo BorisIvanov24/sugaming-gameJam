@@ -3,15 +3,27 @@
 #include "Hero.h"
 #include "Item.h"
 #include "Mage.h"
+#include "MyTime.h"
 #include "TextBox.h"
 #include "TileMap.h"
+#include "UIButton.h"
 #include "raylib.h"
 #include <iostream>
+#include <sstream>
 #include <vector>
-#include "UIButton.h"
 #pragma warning(disable : 4996)
 
 int starsCount = 0;
+int enemiesKilled = 0;
+int potionsCollected = 0;
+int liveEnemies = 0;
+
+int engine = 0;
+int fuelTank = 0;
+int capsule = 0;
+int cabine = 0;
+Time myTime(0, 0, 0);
+
 bool hitboxesOn = false;
 
 Animation *loadHeroAnims(unsigned count)
@@ -71,10 +83,22 @@ Animation *loadStarAnims()
 
     return res;
 }
+
 Animation *loadHeartAnims()
 {
     Animation *res = new Animation;
     res->loadFromFolder("Assets/potion/potion_", 4);
+
+    return res;
+}
+
+Animation *loadSpecItems(unsigned count)
+{
+    Animation *res = new Animation[count];
+    res[0].addTexture(LoadTexture("Assets/Rocket/rocket_0.png")); // cabine
+    res[1].addTexture(LoadTexture("Assets/Rocket/rocket_1.png")); // tank
+    res[2].addTexture(LoadTexture("Assets/Rocket/rocket_2.png")); // capsula
+    res[3].addTexture(LoadTexture("Assets/Rocket/rocket_3.png")); // engine
 
     return res;
 }
@@ -102,6 +126,7 @@ void spawnEnemies(std::vector<Enemy *> &enemies, const TileMap &tilemap, const A
     Rectangle random = {(float)(100 + rand() % 3900), (float)(100 + rand() % 3900), 32, 32};
     Enemy *newEn = new Mage(random, 100, 3, tilemap, anim, &hero);
     enemies.push_back(newEn);
+    liveEnemies++;
 }
 
 void playEnemies(std::vector<Enemy *> &enemies)
@@ -127,6 +152,19 @@ void playItems(std::vector<Item *> &items, Hero &hero)
                 break;
             case ItemType::HEART:
                 hero.heal();
+                potionsCollected++;
+                break;
+            case ItemType::ENGINE:
+                engine++;
+                break;
+            case ItemType::CABINE:
+                cabine++;
+                break;
+            case ItemType::CAPSULE:
+                capsule++;
+                break;
+            case ItemType::FUEL_TANK:
+                fuelTank++;
                 break;
             default:
                 break;
@@ -143,7 +181,7 @@ void playItems(std::vector<Item *> &items, Hero &hero)
 }
 
 void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero, std::vector<Item *> &items, const Animation &starAnim,
-               const Animation &heartAnim)
+               const Animation &heartAnim, const Animation *specItemsAnims)
 {
 
     srand(time(0));
@@ -155,13 +193,27 @@ void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero, std::vector<Item
             enemies[i]->takeDamage(hero.getDamage());
             if (enemies[i]->getHealth() <= 0)
             {
-                int ran = (rand() % 10);
+                int ran = (rand() % 420);
+                int chanceX = starsCount / 100;
+                if (chanceX > 60)
+                    chanceX = 60;
 
-                if (ran < 8) // 20% for potion
-                    ran = 0;
-                else // 80 % for star
-                    ran = 1;
-                ItemType curType = (ItemType)(ran);
+                ItemType type = ItemType::CABINE;
+
+                if (ran < 60)
+                    type = ItemType::HEART;
+                else if (ran < 420 - chanceX * 4)
+                    type = ItemType::STAR;
+                else if (ran < 420 - chanceX * 3)
+                    type = ItemType::ENGINE;
+                else if (ran < 420 - chanceX * 2)
+                    type = ItemType::CABINE;
+                else if (ran < 420 - chanceX * 1)
+                    type = ItemType::CAPSULE;
+                else
+                    type = ItemType::FUEL_TANK;
+
+                ItemType curType = type;
                 // std::cout << (int)curType << std::endl;
                 const Animation *anim = nullptr;
                 switch (curType)
@@ -172,6 +224,18 @@ void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero, std::vector<Item
                 case ItemType::HEART:
                     anim = &heartAnim;
                     break;
+                case ItemType::ENGINE:
+                    anim = &specItemsAnims[3];
+                    break;
+                case ItemType::FUEL_TANK:
+                    anim = &specItemsAnims[1];
+                    break;
+                case ItemType::CABINE:
+                    anim = &specItemsAnims[0];
+                    break;
+                case ItemType::CAPSULE:
+                    anim = &specItemsAnims[2];
+                    break;
                 default:
                     break;
                 }
@@ -181,48 +245,139 @@ void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero, std::vector<Item
 
                 delete enemies[i];
                 enemies.erase(enemies.begin() + i);
+                enemiesKilled++;
+                liveEnemies--;
                 i--;
             }
         }
     }
 }
 
-void writeCoins(Font& font)
+void writeCoins(Font &font)
 {
     char str[19] = "Stars ";
     char num[11] = {0};
     strcat(str, itoa(starsCount, num, 10));
-    TextBox tb(str, {10, 50, 150, 150}, font, YELLOW);
+    TextBox tb(str, {10, 40, 120, 50}, font, YELLOW);
     tb.draw();
+}
+
+void drawHealth(const Hero &hero, const Font &font)
+{
+    DrawRectangle(0, 0, hero.getHealth(), 40, RED);
+    char str[16] = "Health ";
+    char num[6];
+    itoa(hero.getHealth(), num, 10);
+    strcat(str, num);
+    TextBox tb(str, {0, 0, 180, 50}, font, BLACK);
+    tb.draw();
+}
+
+void writeItems(const Font &font)
+{
+    char str[21] = "PotionsDrunk ";
+    char num[6];
+    itoa(potionsCollected, num, 10);
+    strcat(str, num);
+    TextBox tb(str, {0, 70, 230, 50}, font, YELLOW);
+    tb.draw();
+
+    char str1[23] = "Enemies killed ";
+    char num1[6];
+    itoa(enemiesKilled, num1, 10);
+    strcat(str1, num1);
+    TextBox tb1(str1, {0, 100, 250, 50}, font, YELLOW);
+    tb1.draw();
+
+    char str2[23] = "Enemies alive ";
+    char num2[6];
+    itoa(liveEnemies, num2, 10);
+    strcat(str2, num2);
+    TextBox tb2(str2, {550, 40, 250, 50}, font, YELLOW);
+    tb2.draw();
+
+    char str3[15] = "Engine ";
+    char num3[6];
+    itoa(engine, num3, 10);
+    strcat(str3, num3);
+    TextBox tb3(str3, {15, 130, 120, 50}, font, engine ? GREEN : ORANGE);
+    tb3.draw();
+
+    char str4[18] = "FuelTank ";
+    char num4[6];
+    itoa(fuelTank, num4, 10);
+    strcat(str4, num4);
+    TextBox tb4(str4, {10, 160, 150, 50}, font, fuelTank ? GREEN : ORANGE);
+    tb4.draw();
+
+    char str5[18] = "Cabin ";
+    char num5[6];
+    itoa(cabine, num5, 10);
+    strcat(str5, num5);
+    TextBox tb5(str5, {10, 190, 105, 50}, font, cabine ? GREEN : ORANGE);
+    tb5.draw();
+
+    char str6[18] = "Capsule ";
+    char num6[6];
+    itoa(capsule, num6, 10);
+    strcat(str6, num6);
+    TextBox tb6(str6, {10, 220, 150, 50}, font, capsule ? GREEN : ORANGE);
+    tb6.draw();
+}
+
+void printTime(const Font &font)
+{
+    // timer
+    char time[16] = "Time: ";
+    char t[10];
+    std::stringstream sstr;
+    myTime.serialize(sstr);
+
+    strcpy(t, sstr.str().c_str());
+    strcat(time, t);
+    time[14] = '\0'; // remove everything not needed
+    TextBox timeBox(time, {900, 25, 210, 70}, font, YELLOW);
+    timeBox.draw();
 }
 
 enum class screenState
 {
     MAIN_MENU,
     GAME,
-    GAME_OVER
+    GAME_OVER,
+    WIN
 };
 
 int main()
 {
-    
+
     screenState scrState = screenState::MAIN_MENU;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "AstralAvenger    Press H to turn on hitboxes");
     SetTargetFPS(60);
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
+    // SetWindowState(FLAG_WINDOW_RESIZABLE);
 
-    UIButton buttonPlay({ 510, 510, 250, 90 }, "Assets/Menu/buttonPlayTexture.png", "Play");
+    UIButton buttonPlay({510, 510, 250, 90}, "Assets/Menu/buttonPlayTexture.png", "Play");
     Font font = LoadFont("Assets/Menu/RACESPACEREGULAR.otf");
     buttonPlay.setFont(font);
 
-    UIButton buttonPlayAgain({ 510, 510, 250, 90 }, "Assets/Menu/buttonPlayTexture.png", "Try Again");
+    UIButton buttonPlayAgain({510, 510, 250, 90}, "Assets/Menu/buttonPlayTexture.png", "Try Again");
     buttonPlayAgain.setFont(font);
 
-    Texture2D mainMenuBackground;//("Assets/Menu/mainMenuBackground.png", { 0, 0, GetScreenWidth(), GetScreenHeight()});
+    UIButton buttonContinue({330, 510, 250, 90}, "Assets/Menu/buttonPlayTexture.png", "Continue");
+    buttonContinue.setFont(font);
+
+    UIButton buttonExit({630, 510, 250, 90}, "Assets/Menu/buttonPlayTexture.png", "Exit");
+    buttonExit.setFont(font);
+
+    Texture2D
+        mainMenuBackground; //("Assets/Menu/mainMenuBackground.png", { 0, 0, GetScreenWidth(), GetScreenHeight()});
     mainMenuBackground = LoadTexture("Assets/Menu/mainMenuBackground.png");
     Texture2D gameOverBackground;
     gameOverBackground = LoadTexture("Assets/Menu/gameOverBackground.png");
+
+    Texture2D winBackground;
+    winBackground = LoadTexture("Assets/Menu/winScreen.png");
 
     TileMap tileMap("Assets/Map/map.png", "Assets/Map/MapMatrix.dat");
 
@@ -232,6 +387,7 @@ int main()
     Animation *assassinAnims = loadAsassinAnims(8);
     Animation *starAnims = loadStarAnims();
     Animation *heartAnims = loadHeartAnims();
+    Animation *specItems = loadSpecItems(4);
 
     Hero mainHero({150, 150, 32, 32}, 1280, 4, heroAnims, tileMap);
     // Mage m({250, 250, 32, 64}, 100, 3, tileMap, heroAnims, &mainHero);
@@ -248,17 +404,16 @@ int main()
 
     while (!WindowShouldClose())
     {
-            if (IsKeyPressed(KEY_H))
-            {
-                mainHero.setHitBoxes();
-                Enemy::hitboxesOn = !Enemy::hitboxesOn;
-            }
 
+        if (IsKeyPressed(KEY_H))
+        {
+            mainHero.setHitBoxes();
+            Enemy::hitboxesOn = !Enemy::hitboxesOn;
+        }
 
         switch (scrState)
         {
-        case screenState::MAIN_MENU:
-        {
+        case screenState::MAIN_MENU: {
             BeginDrawing();
             DrawTexture(mainMenuBackground, 0, 0, RAYWHITE);
             buttonPlay.play();
@@ -268,10 +423,15 @@ int main()
             EndDrawing();
             break;
         }
-        case screenState::GAME:
-        {
+        case screenState::GAME: {
+            if (frames % 60 == 0)
+                myTime.tick();
+
             camera.target = mainHero.getPositionWorld();
-            camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
+            camera.offset = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+
+            if (engine && cabine && fuelTank && capsule)
+                scrState = screenState::WIN;
 
             BeginDrawing();
             ClearBackground(LIGHTGRAY);
@@ -286,12 +446,12 @@ int main()
             if ((frames % (mainHero.getCooldownWhip() * 60)) == 0)
             {
                 mainHero.setWhipPlaying();
-                whipAtack(enemies, mainHero, items, *starAnims, *heartAnims);
+                whipAtack(enemies, mainHero, items, *starAnims, *heartAnims, specItems);
             }
 
             playEnemies(enemies);
 
-            std::cout << mainHero.getHealth() << std::endl;
+            // std::cout << mainHero.getHealth() << std::endl;
             if (mainHero.getHealth() > 1280)
             {
                 scrState = screenState::GAME_OVER;
@@ -300,14 +460,16 @@ int main()
             playItems(items, mainHero);
 
             EndMode2D();
-            DrawRectangle(0, 0, mainHero.getHealth(), 40, RED);
+            drawHealth(mainHero, font);
             writeCoins(font);
+            writeItems(font);
+            DrawFPS(1200, 50);
+            printTime(GetFontDefault());
             EndDrawing();
             frames++;
             break;
         }
-        case screenState::GAME_OVER:
-        {
+        case screenState::GAME_OVER: {
             BeginDrawing();
             DrawTexture(gameOverBackground, 0, 0, RAYWHITE);
             buttonPlayAgain.play();
@@ -315,7 +477,7 @@ int main()
             if (buttonPlayAgain.isClicked())
             {
                 scrState = screenState::GAME;
-                
+
                 for (int i = 0; i < enemies.size(); i++)
                 {
                     delete enemies[i];
@@ -332,9 +494,32 @@ int main()
 
                 mainHero.setHealth(1280);
                 starsCount = 0;
+                enemiesKilled = 0;
+                potionsCollected = 0;
+                liveEnemies = 0;
+
+                engine = 0;
+                fuelTank = 0;
+                capsule = 0;
+                cabine = 0;
+                myTime.restart();
             }
 
             EndDrawing();
+            break;
+        }
+        case screenState::WIN: {
+            BeginDrawing();
+            DrawTexture(winBackground, 0, 0, RAYWHITE);
+            buttonContinue.play();
+            buttonExit.play();
+
+            if (buttonContinue.isClicked())
+                scrState = screenState::GAME;
+            else if (buttonExit.isClicked())
+                return 0;
+            EndDrawing();
+
             break;
         }
         }

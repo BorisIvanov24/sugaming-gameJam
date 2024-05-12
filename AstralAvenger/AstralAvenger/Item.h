@@ -5,7 +5,11 @@ constexpr Rectangle DEFAULT_ITEM_REC = {32, 32, 0, 0};
 enum class ItemType
 {
     STAR,
-    HEART
+    HEART,
+    ENGINE,
+    CABINE,
+    CAPSULE,
+    FUEL_TANK
 };
 
 class Item

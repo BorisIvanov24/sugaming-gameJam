@@ -134,6 +134,7 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyTime.cpp" />
     <ClCompile Include="PictureBox.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TileMap.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Hero.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Mage.h" />
+    <ClInclude Include="MyTime.h" />
     <ClInclude Include="PictureBox.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TileMap.h" />
