@@ -26,6 +26,7 @@ Time myTime(0, 0, 0);
 
 bool hitboxesOn = false;
 bool statsOn = true;
+bool alreadyWin = false;
 
 Animation *loadHeroAnims(unsigned count)
 {
@@ -437,8 +438,11 @@ int main()
             camera.target = mainHero.getPositionWorld();
             camera.offset = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 
-            if (engine && cabine && fuelTank && capsule)
+            if (engine && cabine && fuelTank && capsule && (!alreadyWin))
+            {
                 scrState = screenState::WIN;
+                alreadyWin = true;
+            }
 
             BeginDrawing();
             ClearBackground(LIGHTGRAY);
