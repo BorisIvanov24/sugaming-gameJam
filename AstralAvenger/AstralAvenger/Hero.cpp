@@ -65,22 +65,22 @@ void Hero::input()
     state.changeOfX = 0;
     state.changeOfY = 0;
 
-    if (IsKeyDown(KEY_S))
+    if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN))
     {
         state.animToPlay = AnimationType::MOVE_DOWN;
         state.changeOfY = movementSpeed;
     }
-    if (IsKeyDown(KEY_A))
-    {
+    if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))
+    { 
         state.animToPlay = AnimationType::MOVE_LEFT;
         state.changeOfX = -(int)movementSpeed;
     }
-    if (IsKeyDown(KEY_D))
+    if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT))
     {
         state.animToPlay = AnimationType::MOVE_RIGHT;
         state.changeOfX = movementSpeed;
     }
-    if (IsKeyDown(KEY_W))
+    if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP))
     {
         state.animToPlay = AnimationType::MOVE_UP;
         state.changeOfY = -(int)movementSpeed;
