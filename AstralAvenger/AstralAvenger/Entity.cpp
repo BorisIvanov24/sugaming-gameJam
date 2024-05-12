@@ -20,6 +20,7 @@ void Entity::takeDamage(unsigned damage)
 
 void Entity::heal()
 {
+    if(health<1180)
     health += 100;
 }
 

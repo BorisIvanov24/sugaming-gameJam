@@ -21,6 +21,8 @@ class Enemy : public Entity
     void play();
     virtual ~Enemy() = default;
     void takeDamage(unsigned damage) override;
+    void setHitBoxes();
+    static bool hitboxesOn;
 
   protected:
     void input();
@@ -34,4 +36,5 @@ class Enemy : public Entity
     unsigned attackSpeed = 0;
     EnemyState state;
     bool hurtPlaying = false;
+    
 };

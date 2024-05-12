@@ -8,9 +8,11 @@
 #include "raylib.h"
 #include <iostream>
 #include <vector>
+#include "UIButton.h"
 #pragma warning(disable : 4996)
 
 int starsCount = 0;
+bool hitboxesOn = false;
 
 Animation *loadHeroAnims(unsigned count)
 {
@@ -185,20 +187,42 @@ void whipAtack(std::vector<Enemy *> &enemies, const Hero &hero, std::vector<Item
     }
 }
 
-void writeCoins()
+void writeCoins(Font& font)
 {
-    char str[19] = "Stars: ";
+    char str[19] = "Stars ";
     char num[11] = {0};
     strcat(str, itoa(starsCount, num, 10));
-    TextBox tb(str, {10, 50, 150, 150}, GetFontDefault(), YELLOW);
+    TextBox tb(str, {10, 50, 150, 150}, font, YELLOW);
     tb.draw();
 }
 
+enum class screenState
+{
+    MAIN_MENU,
+    GAME,
+    GAME_OVER
+};
+
 int main()
 {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "AstralAvenger");
+    
+    screenState scrState = screenState::MAIN_MENU;
+
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "AstralAvenger    Press H to turn on hitboxes");
     SetTargetFPS(60);
     SetWindowState(FLAG_WINDOW_RESIZABLE);
+
+    UIButton buttonPlay({ 510, 510, 250, 90 }, "Assets/Menu/buttonPlayTexture.png", "Play");
+    Font font = LoadFont("Assets/Menu/RACESPACEREGULAR.otf");
+    buttonPlay.setFont(font);
+
+    UIButton buttonPlayAgain({ 510, 510, 250, 90 }, "Assets/Menu/buttonPlayTexture.png", "Try Again");
+    buttonPlayAgain.setFont(font);
+
+    Texture2D mainMenuBackground;//("Assets/Menu/mainMenuBackground.png", { 0, 0, GetScreenWidth(), GetScreenHeight()});
+    mainMenuBackground = LoadTexture("Assets/Menu/mainMenuBackground.png");
+    Texture2D gameOverBackground;
+    gameOverBackground = LoadTexture("Assets/Menu/gameOverBackground.png");
 
     TileMap tileMap("Assets/Map/map.png", "Assets/Map/MapMatrix.dat");
 
@@ -218,46 +242,102 @@ int main()
     camera.target = mainHero.getPositionWorld();
     camera.offset = {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
     camera.rotation = 0.0f;
-    camera.zoom = 2.5f;
+    camera.zoom = 2.0f;
 
     int frames = 0;
 
     while (!WindowShouldClose())
     {
-        camera.target = mainHero.getPositionWorld();
-        camera.offset = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+            if (IsKeyPressed(KEY_H))
+            {
+                mainHero.setHitBoxes();
+                Enemy::hitboxesOn = !Enemy::hitboxesOn;
+            }
 
-        BeginDrawing();
-        ClearBackground(LIGHTGRAY);
 
-        BeginMode2D(camera);
-        tileMap.draw();
-        mainHero.play();
-        // m.play();
-        if (frames % 30 == 0)
-            spawnEnemies(enemies, tileMap, mageAnims, skeletonAnims, assassinAnims, mainHero);
-
-        if ((frames % (mainHero.getCooldownWhip() * 60)) == 0)
+        switch (scrState)
         {
-            mainHero.setWhipPlaying();
-            whipAtack(enemies, mainHero, items, *starAnims, *heartAnims);
+        case screenState::MAIN_MENU:
+        {
+            BeginDrawing();
+            DrawTexture(mainMenuBackground, 0, 0, RAYWHITE);
+            buttonPlay.play();
+            if (buttonPlay.isClicked())
+                scrState = screenState::GAME;
+
+            EndDrawing();
+            break;
         }
+        case screenState::GAME:
+        {
+            camera.target = mainHero.getPositionWorld();
+            camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 
-        playEnemies(enemies);
-        // if (mainHero.getHealth() <= 0)
-        //{
-        //     EndMode2D();
-        //     EndDrawing();
-        //     break;
-        // }
+            BeginDrawing();
+            ClearBackground(LIGHTGRAY);
 
-        playItems(items, mainHero);
+            BeginMode2D(camera);
+            tileMap.draw();
+            mainHero.play();
+            // m.play();
+            if (frames % 30 == 0)
+                spawnEnemies(enemies, tileMap, mageAnims, skeletonAnims, assassinAnims, mainHero);
 
-        EndMode2D();
-        DrawRectangle(0, 0, mainHero.getHealth(), 40, RED);
-        writeCoins();
-        EndDrawing();
-        frames++;
+            if ((frames % (mainHero.getCooldownWhip() * 60)) == 0)
+            {
+                mainHero.setWhipPlaying();
+                whipAtack(enemies, mainHero, items, *starAnims, *heartAnims);
+            }
+
+            playEnemies(enemies);
+
+            std::cout << mainHero.getHealth() << std::endl;
+            if (mainHero.getHealth() > 1280)
+            {
+                scrState = screenState::GAME_OVER;
+            }
+
+            playItems(items, mainHero);
+
+            EndMode2D();
+            DrawRectangle(0, 0, mainHero.getHealth(), 40, RED);
+            writeCoins(font);
+            EndDrawing();
+            frames++;
+            break;
+        }
+        case screenState::GAME_OVER:
+        {
+            BeginDrawing();
+            DrawTexture(gameOverBackground, 0, 0, RAYWHITE);
+            buttonPlayAgain.play();
+
+            if (buttonPlayAgain.isClicked())
+            {
+                scrState = screenState::GAME;
+                
+                for (int i = 0; i < enemies.size(); i++)
+                {
+                    delete enemies[i];
+                }
+
+                enemies.clear();
+
+                for (int i = 0; i < items.size(); i++)
+                {
+                    delete items[i];
+                }
+
+                items.clear();
+
+                mainHero.setHealth(1280);
+                starsCount = 0;
+            }
+
+            EndDrawing();
+            break;
+        }
+        }
     }
 
     // BeginDrawing();

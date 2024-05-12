@@ -40,6 +40,11 @@ void Hero::setWhipPlaying()
     whipPlaying = true;
 }
 
+void Hero::setHitBoxes()
+{
+    hitboxesOn = !hitboxesOn;
+}
+
 Hero::Hero(const Rectangle &hitBox, int health, unsigned movementSpeed, const Animation *animations,
            const TileMap &tileMap)
     : Entity(hitBox, health, movementSpeed, tileMap)
@@ -103,7 +108,9 @@ void Hero::draw()
     }
     animations[(int)state.animToPlay].play({hitBox.x, hitBox.y});
     //DrawRectangleLines(whipRec.x, whipRec.y, whipRec.width, whipRec.height, BLACK);
-    //DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
+    
+    if(hitboxesOn)
+    DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
     // nametag
 }
 

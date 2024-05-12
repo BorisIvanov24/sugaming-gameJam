@@ -137,6 +137,7 @@
     <ClCompile Include="PictureBox.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="UIButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="PictureBox.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="UIButton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

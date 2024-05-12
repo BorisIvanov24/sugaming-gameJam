@@ -1,5 +1,7 @@
 #include "Enemy.h"
 
+bool Enemy::hitboxesOn = false;
+
 Enemy::Enemy(const Rectangle &hitBox, int health, unsigned movementSpeed, const TileMap &tileMap, Hero *target)
     : Entity(hitBox, health, movementSpeed, tileMap)
 {
@@ -88,6 +90,11 @@ void Enemy::takeDamage(unsigned damage)
     state.animToPlay = AnimationType::HURT;
 }
 
+void Enemy::setHitBoxes()
+{
+    hitboxesOn = !hitboxesOn;
+}
+
 void Enemy::update()
 {
     move();
@@ -99,11 +106,14 @@ void Enemy::draw()
     if (hurtPlaying)
     {
         hurtPlaying = animations[(int)state.animToPlay].playRun({hitBox.x, hitBox.y});
-        // DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
+        
+        if (hitboxesOn)
+        DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
         return;
     }
     animations[(int)state.animToPlay].play({hitBox.x, hitBox.y});
-    // DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
+    if (hitboxesOn)
+    DrawRectangleLines(hitBox.x, hitBox.y, hitBox.width, hitBox.height, ORANGE);
 }
 
 void Enemy::move()

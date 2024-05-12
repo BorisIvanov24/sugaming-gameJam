@@ -28,6 +28,8 @@ class Hero : public Entity
     void playWhip() const;
     void setWhipPlaying();
 
+    void setHitBoxes();
+
   private:
     void input();
     void update();
@@ -41,6 +43,7 @@ class Hero : public Entity
     unsigned cooldownWhip = 2;
     unsigned damage = 50;
     bool whipPlaying = false;
+    bool hitboxesOn = false;
 
     // atacks/wepons //healthbar
 };
