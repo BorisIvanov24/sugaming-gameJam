@@ -25,6 +25,7 @@ int cabine = 0;
 Time myTime(0, 0, 0);
 
 bool hitboxesOn = false;
+bool statsOn = true;
 
 Animation *loadHeroAnims(unsigned count)
 {
@@ -350,16 +351,16 @@ enum class screenState
 
 int main()
 {
-
     screenState scrState = screenState::MAIN_MENU;
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "AstralAvenger    Press H to turn on hitboxes");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "AstralAvenger  Press H to turn on hitboxes, Press T to hide stats");
     SetTargetFPS(60);
     // SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     UIButton buttonPlay({510, 510, 250, 90}, "Assets/Menu/buttonPlayTexture.png", "Play");
     Font font = LoadFont("Assets/Menu/RACESPACEREGULAR.otf");
     buttonPlay.setFont(font);
+    Image icon = LoadImage("Assets/Star/star_0.png");
 
     UIButton buttonPlayAgain({510, 510, 250, 90}, "Assets/Menu/buttonPlayTexture.png", "Try Again");
     buttonPlayAgain.setFont(font);
@@ -402,6 +403,8 @@ int main()
 
     int frames = 0;
 
+    SetWindowIcon(icon);
+
     while (!WindowShouldClose())
     {
 
@@ -409,6 +412,10 @@ int main()
         {
             mainHero.setHitBoxes();
             Enemy::hitboxesOn = !Enemy::hitboxesOn;
+        }
+        else if (IsKeyPressed(KEY_T))
+        {
+            statsOn = !statsOn;
         }
 
         switch (scrState)
@@ -460,11 +467,16 @@ int main()
             playItems(items, mainHero);
 
             EndMode2D();
+
             drawHealth(mainHero, font);
-            writeCoins(font);
-            writeItems(font);
-            DrawFPS(1200, 50);
-            printTime(GetFontDefault());
+            if (statsOn)
+            {
+                writeCoins(font);
+                writeItems(font);
+                printTime(GetFontDefault());
+            }
+            // DrawFPS(1200, 50);
+
             EndDrawing();
             frames++;
             break;
